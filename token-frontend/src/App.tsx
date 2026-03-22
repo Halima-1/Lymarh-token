@@ -25,14 +25,14 @@ const AppContent: React.FC = () => {
   return (
     <div className="app-container">
       <div className="mesh-gradient" />
-      <Toaster position="top-right" richColors theme="dark" />
-      
+      <Toaster position="top-right" richColors theme={theme} />
+
       <header>
         <div className="logo">
           <Coins size={32} strokeWidth={2.5} />
           <span>Lymarh Protocol</span>
         </div>
-        
+
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <button className="btn btn-outline" onClick={toggleTheme} style={{ width: '40px', height: '40px', padding: 0, borderRadius: '50%' }}>
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
@@ -60,7 +60,7 @@ const AppContent: React.FC = () => {
             transition={{ duration: 1, ease: "easeOut" }}
             style={{ marginBottom: '1.5rem' }}
           >
-            <div className="hero-badge">Web3 Native Utility</div>
+            {/* <div className="hero-badge">Web3 Native Utility</div> */}
           </motion.div>
 
           <motion.h1
@@ -68,14 +68,8 @@ const AppContent: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            The Next-Gen <br /> 
-            <motion.span
-              animate={{ color: ["#a855f7", "#3b82f6", "#a855f7"] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              style={{ display: 'inline-block' }}
-            >
-              Utility Token
-            </motion.span>
+            Claim. Hold. Transact.
+            Welcome to Lymarh.
           </motion.h1>
 
           <motion.p
@@ -83,22 +77,21 @@ const AppContent: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Lymarh (LH) powers the decentralized future of Lisk. Secure, fast, and community-driven.
+            Lymarh (LH), A fast, secure, community-driven token built natively on Lisk Sepolia.
           </motion.p>
-          
+
           <AnimatePresence>
             {!account && (
-              <motion.div 
+              <motion.div
                 style={{ marginTop: '3rem' }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.5 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
-                <motion.button 
-                  className="btn btn-primary" 
-                  onClick={connectWallet} 
-                  style={{ width: 'auto', padding: '1rem 3.5rem', fontSize: '1.25rem' }}
+                <motion.button
+                  className="btn btn-primary btn-hero"
+                  onClick={connectWallet}
                   whileHover={{ scale: 1.05, boxShadow: "0 0 20px var(--primary-glow)" }}
                   whileTap={{ scale: 0.95 }}
                 >

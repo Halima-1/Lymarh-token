@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { useTokenInfo } from '../hooks/useTokenInfo';
 import { useContractActions } from '../hooks/useContractActions';
-import { 
-  PlusCircle, 
+import {
+  PlusCircle,
   Activity,
   ShieldCheck,
   Gift,
@@ -15,7 +15,7 @@ export const ActionCards: React.FC = () => {
   const { account } = useWeb3();
   const info = useTokenInfo();
   const { transfer, claimTokens, mint, loadingAction } = useContractActions(info.refresh);
-  
+
   // Refs
   const transferToRef = useRef<HTMLInputElement>(null);
   const transferAmountRef = useRef<HTMLInputElement>(null);
@@ -66,9 +66,9 @@ export const ActionCards: React.FC = () => {
       <section className="card">
         <h3><Gift size={20} /> Token Faucet</h3>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1rem' }}>Get 1,000 free {info.symbol} tokens every 2 days.</p>
-        <button 
+        <button
           className={`btn ${info.canClaim ? 'btn-primary' : 'btn-outline'}`}
-          onClick={claimTokens} 
+          onClick={claimTokens}
           disabled={loadingAction || !info.canClaim}
         >
           {loadingAction ? <div className="loading-spinner" /> : <Gift size={18} />}

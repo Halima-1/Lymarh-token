@@ -2,32 +2,32 @@
 
 :root {
   --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  
-  /* Dark Theme (Default) */
-  --bg-dark: #0a0a0c;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --border-card: rgba(255, 255, 255, 0.1);
-  --primary: #a855f7;
-  --primary-glow: rgba(168, 85, 247, 0.5);
-  --secondary: #3b82f6;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+
+  /* Dark Theme (Default) - Golden Premium */
+  --bg-dark: #0a0907;
+  --bg-card: rgba(255, 255, 255, 0.02);
+  --border-card: rgba(251, 191, 36, 0.1);
+  --primary: #fbbf24;
+  --primary-glow: rgba(251, 191, 36, 0.4);
+  --secondary: #d97706;
+  --text-primary: #fefce8;
+  --text-secondary: #a1a1aa;
   --success: #22c55e;
   --error: #ef4444;
-  --input-bg: rgba(0, 0, 0, 0.2);
-  --btn-outline-text: white;
-  --header-bg: rgba(10, 10, 12, 0.8);
+  --input-bg: rgba(0, 0, 0, 0.3);
+  --btn-outline-text: #fbbf24;
+  --header-bg: rgba(10, 9, 7, 0.85);
 }
 
 .light-theme {
-  --bg-dark: #f8fafc;
-  --bg-card: rgba(255, 255, 255, 0.8);
-  --border-card: rgba(0, 0, 0, 0.1);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --input-bg: rgba(255, 255, 255, 0.5);
-  --btn-outline-text: #0f172a;
-  --header-bg: rgba(248, 250, 252, 0.8);
+  --bg-dark: #fdfaf3;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --border-card: rgba(217, 119, 6, 0.15);
+  --text-primary: #451a03;
+  --text-secondary: #92400e;
+  --input-bg: #fff;
+  --btn-outline-text: #92400e;
+  --header-bg: rgba(253, 250, 243, 0.85);
 }
 
 * {
@@ -59,9 +59,9 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
-    radial-gradient(circle at 0% 0%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+  background:
+    radial-gradient(circle at 0% 0%, rgba(251, 191, 36, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(217, 119, 6, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 0%, var(--bg-dark) 100%);
   z-index: -1;
 }
@@ -101,22 +101,48 @@ main {
 .hero-section {
   text-align: center;
   margin-bottom: 4rem;
-  padding: 4rem 0;
+  padding: 8rem 2rem;
+  border-radius: 2.5rem;
+  border: 1px solid var(--border-card);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/assets/hero-bg.png');
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  transform: scale(1.1);
+  z-index: -1;
+}
+
+.light-theme .hero-section::before {
+  background-image: linear-gradient(rgba(255,251,235,0.7), rgba(255,251,235,0.7)), url('/assets/hero-bg.png');
 }
 
 .hero-section h1 {
-  font-size: 4rem;
+  font-size: clamp(2.5rem, 8vw, 4rem);
   font-weight: 800;
   margin-bottom: 1rem;
+  line-height: 1.1;
   letter-spacing: -0.025em;
   background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .hero-section p {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 3vw, 1.25rem);
   color: var(--text-secondary);
   max-width: 600px;
   margin: 0 auto;
@@ -175,23 +201,23 @@ main {
 
 .grid-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: 1.5rem;
-  padding: 2rem;
+  padding: clamp(1.5rem, 5vw, 2rem);
   backdrop-filter: blur(20px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .card:hover {
-  border-color: rgba(168, 85, 247, 0.3);
-  box-shadow: 0 15px 40px rgba(168, 85, 247, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 15px 40px var(--primary-glow);
   transform: translateY(-5px);
 }
 
@@ -256,6 +282,14 @@ input:focus {
 .btn-primary {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: white;
+}
+
+.btn-hero {
+  width: auto;
+  padding: 1.25rem 4rem;
+  font-size: 1.25rem;
+  border-radius: 9999px;
+  margin: 0 auto;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -332,11 +366,117 @@ input:focus {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
+  header {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  /* Keep logo icon, hide text on small mobile if needed */
+  /* .logo span { display: none; } */
+
+  .hero-section {
+    padding: 4rem 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 1.5rem;
+  }
+
+  .grid-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .claim-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .claim-amount {
+    align-self: flex-end;
+  }
+
+  .card h3 {
+    font-size: 1.125rem;
+  }
+
+  .stat-value {
+    font-size: 1.125rem;
+  }
+
   .hero-section h1 {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-section p {
+    font-size: 0.9375rem;
+  }
+
+  .btn-hero {
+    padding: 1rem 3rem;
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 0.9375rem;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+  }
+
+  .hero-section h1 {
+    font-size: 1.875rem; /* Further reduced for mobile */
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  header {
+    padding: 1rem;
+    justify-content: space-between;
+  }
+  
+  .logo span {
+    font-size: 1.125rem;
+    display: inline;
+  }
+
+  .btn {
+    font-size: 0.8125rem;
+    padding: 0.625rem;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+  }
+
+  .btn-hero {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .stat-label {
+    font-size: 0.6875rem;
   }
 }
