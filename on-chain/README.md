@@ -1,13 +1,6 @@
 # Sample Hardhat Project
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+# LymarhTokenModule#LymarhToken - 0x4AeB54Dcb53330df6F2885CBCCD3667a04B0e949
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
-```
+# Successfully verified contract LymarhToken on the block explorer.
+https://sepolia-blockscout.lisk.com/address/0x4AeB54Dcb53330df6F2885CBCCD3667a04B0e949#code
