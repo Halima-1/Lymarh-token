@@ -16,8 +16,6 @@ contract LymarhToken is ERC20, Ownable {
     uint256 public constant WAIT_DURATION = 2 days;
     uint256 public remainingSupply;
 
-    uint256 public remainingSupply;
-
     event ClaimProcessed(
         address indexed user,
         uint256 value,
@@ -47,7 +45,6 @@ contract LymarhToken is ERC20, Ownable {
 
         if (
             previousClaim != 0 &&
-        remainingSupply = TOTAL_SUPPLY - INITIAL_SUPPLY;
             block.timestamp < previousClaim + WAIT_DURATION
         ) {
             revert WaitTimeNotReached(previousClaim + WAIT_DURATION);
@@ -59,7 +56,7 @@ contract LymarhToken is ERC20, Ownable {
         lastRequestTime[user] = block.timestamp;
         _mint(user, FAUCET_REWARD);
         remainingSupply = remainingSupply - FAUCET_REWARD;
-        emit ClaimProcessed(INITIAL_SUPPLY
+        emit ClaimProcessed(
             user,
             FAUCET_REWARD,
             block.timestamp + WAIT_DURATION
