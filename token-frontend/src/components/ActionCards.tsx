@@ -7,9 +7,12 @@ import {
   Activity,
   ShieldCheck,
   Gift,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Timer,
+  Info
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export const ActionCards: React.FC = () => {
   const { account } = useWeb3();
@@ -21,6 +24,47 @@ export const ActionCards: React.FC = () => {
   const transferAmountRef = useRef<HTMLInputElement>(null);
   const mintToRef = useRef<HTMLInputElement>(null);
   const mintAmountRef = useRef<HTMLInputElement>(null);
+
+  // Countdown logic
+  const [timeLeft, setTimeLeft] = React.useState<string>('');
+  const [isReady, setIsReady] = React.useState<boolean>(true);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      const nextTime = (Number(info.lastClaimTime) + Number(info.waitDuration)) * 1000;
+      const diff = nextTime - Date.now();
+
+      if (diff <= 0 || Number(info.lastClaimTime) === 0) {
+        setTimeLeft('');
+        setIsReady(true);
+      } else {
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        // Format as HH:MM:SS
+        const h = String(hours).padStart(2, '0');
+        const m = String(minutes).padStart(2, '0');
+        const s = String(seconds).padStart(2, '0');
+        
+        setTimeLeft(`${h}:${m}:${s}`);
+        setIsReady(false);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [info.lastClaimTime, info.waitDuration]);
+
+  const handleClaimClick = async () => {
+    if (!isReady) {
+      toast.warning(`Please wait! You can claim again in ${timeLeft}`, {
+        description: "The faucet has a 2-day cooldown period.",
+        icon: <Info size={16} />
+      });
+      return;
+    }
+    await claimTokens();
+  };
 
   const handleTransfer = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,14 +109,22 @@ export const ActionCards: React.FC = () => {
       {/* Faucet Card */}
       <section className="card">
         <h3><Gift size={20} /> Token Faucet</h3>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1rem' }}>Get 1,000 free {info.symbol} tokens every 2 days.</p>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+          Get 1,000 free {info.symbol} tokens every 2 days.
+        </p>
         <button
-          className={`btn ${info.canClaim ? 'btn-primary' : 'btn-outline'}`}
-          onClick={claimTokens}
-          disabled={loadingAction || !info.canClaim}
+          className={`btn ${isReady ? 'btn-primary' : 'btn-outline'}`}
+          onClick={handleClaimClick}
+          disabled={loadingAction}
         >
-          {loadingAction ? <div className="loading-spinner" /> : <Gift size={18} />}
-          {info.canClaim ? `Claim 1,000 ${info.symbol}` : 'Faucet Locked'}
+          {loadingAction ? (
+            <div className="loading-spinner" />
+          ) : isReady ? (
+            <Gift size={18} />
+          ) : (
+            <Timer size={18} />
+          )}
+          {isReady ? `Claim 1,000 ${info.symbol}` : `Next Claim in ${timeLeft}`}
         </button>
       </section>
 

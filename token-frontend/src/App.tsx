@@ -1,6 +1,7 @@
 import { Web3Provider, useWeb3 } from './context/Web3Context';
 import { ActionCards } from './components/ActionCards';
 import { ClaimExplorer } from './components/ClaimExplorer';
+import { AboutSection } from './components/AboutSection';
 import { Coins, Wallet, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'sonner';
@@ -69,7 +70,7 @@ const AppContent: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             Claim. Hold. Transact.
-            Welcome to Lymarh.
+            Welcome to Lymarh Token.
           </motion.h1>
 
           <motion.p
@@ -101,6 +102,8 @@ const AppContent: React.FC = () => {
             )}
           </AnimatePresence>
         </section>
+
+        <AboutSection />
 
         <ActionCards />
         <ClaimExplorer />

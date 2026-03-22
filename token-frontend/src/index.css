@@ -476,7 +476,40 @@ input:focus {
     max-width: 280px;
   }
 
-  .stat-label {
-    font-size: 0.6875rem;
+  /* About Section Responsiveness */
+  .about-section {
+    padding: 4rem 0 !important;
+  }
+
+  .about-row {
+    gap: 3rem !important;
+    text-align: center;
+  }
+
+  .about-content {
+    flex: 1 1 100% !important;
+  }
+
+  .about-graphic {
+    flex: 1 1 100% !important;
+    transform: scale(0.8);
+  }
+
+  .about-stats {
+    gap: 1.5rem !important;
+  }
+
+  .about-section h2 {
+    font-size: 2.25rem !important;
+  }
+
+  .about-section h3 {
+    font-size: 1.75rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section-container {
+    gap: 6rem !important;
   }
 }
