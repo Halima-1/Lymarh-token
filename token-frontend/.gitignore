@@ -11,12 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
-src/context/Web3Context.tsx
-src/hooks/useContractActions.ts
-src/hooks/useTokenInfo.ts
 
-
-# Editohr directories and files
+# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
