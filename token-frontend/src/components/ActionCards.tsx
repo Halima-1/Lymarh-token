@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { useTokenInfo } from '../hooks/useTokenInfo';
 import { useContractActions } from '../hooks/useContractActions';
