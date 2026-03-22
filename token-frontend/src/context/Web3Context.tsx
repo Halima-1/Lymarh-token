@@ -32,7 +32,17 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const connectWallet = async () => {
     if (!window.ethereum) {
-      toast.error("Metamask not found!");
+      // Check if user is on mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // Deep link to open this page inside MetaMask's browser
+        const dappUrl = window.location.href.split("//")[1];
+        window.location.href = `https://metamask.app.link/dapp/${dappUrl}`;
+        return;
+      }
+
+      toast.error("MetaMask browser extension not found!");
       return;
     }
 
