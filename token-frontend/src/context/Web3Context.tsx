@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { BrowserProvider, Contract } from 'ethers';
+import { BrowserProvider, Contract, ethers } from 'ethers';
 import { toast } from 'sonner';
 import { CONTRACT_ADDRESS, ABI } from '../constants';
 
@@ -10,7 +10,34 @@ interface Web3ContextType {
   loading: boolean;
   connectWallet: () => Promise<void>;
   isLiskSepolia: boolean;
+  tokenInfo: {
+    name: string;
+    symbol: string;
+    totalSupply: string;
+    remainingSupply: string;
+    balance: string;
+    owner: string;
+    lastClaimTime: string;
+    waitDuration: string;
+    isOwner: boolean;
+    canClaim: boolean;
+  };
+  refreshInfo: () => Promise<void>;
+  disconnectWallet: () => void;
 }
+
+const INITIAL_TOKEN_DATA = {
+  name: '',
+  symbol: '',
+  totalSupply: '0',
+  remainingSupply: '0',
+  balance: '0',
+  owner: '',
+  lastClaimTime: '0',
+  waitDuration: '0',
+  isOwner: false,
+  canClaim: true
+};
 
 const Web3Context = createContext<Web3ContextType | undefined>(undefined);
 
@@ -22,6 +49,61 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({ children
   const [contract, setContract] = useState<Contract | null>(null);
   const [loading, setLoading] = useState(false);
   const [isLiskSepolia, setIsLiskSepolia] = useState(false);
+  const [tokenInfo, setTokenInfo] = useState(INITIAL_TOKEN_DATA);
+
+  const fetchTokenData = useCallback(async (p: BrowserProvider, acc: string | null) => {
+    if (!acc) {
+      setTokenInfo(INITIAL_TOKEN_DATA);
+      return;
+    }
+
+    try {
+      const c = new Contract(CONTRACT_ADDRESS, ABI, p);
+      const [name, symbol, totalSupply, remainingSupply, balance, owner, lastClaimTime, waitDuration] = await Promise.all([
+        c.name(),
+        c.symbol(),
+        c.totalSupply(),
+        c.remainingSupply(),
+        c.balanceOf(acc),
+        c.owner(),
+        c.lastRequestTime(acc),
+        c.WAIT_DURATION()
+      ]);
+
+      const isAccountOwner = acc.toLowerCase() === owner.toLowerCase();
+      const nextTime = (Number(lastClaimTime) + Number(waitDuration)) * 1000;
+      const canUserClaim = Number(lastClaimTime) === 0 || Date.now() > nextTime;
+
+      setTokenInfo({
+        name,
+        symbol,
+        totalSupply: ethers.formatUnits(totalSupply, 18),
+        remainingSupply: ethers.formatUnits(remainingSupply, 18),
+        balance: ethers.formatUnits(balance, 18),
+        owner,
+        lastClaimTime: lastClaimTime.toString(),
+        waitDuration: waitDuration.toString(),
+        isOwner: isAccountOwner,
+        canClaim: canUserClaim
+      });
+    } catch (err) {
+      console.error("Token info fetch error:", err);
+    }
+  }, []);
+
+  const refreshInfo = useCallback(async () => {
+    if (provider && account) {
+      await fetchTokenData(provider, account);
+    }
+  }, [provider, account, fetchTokenData]);
+
+  useEffect(() => {
+    if (provider && account) {
+      fetchTokenData(provider, account);
+      const id = setInterval(() => fetchTokenData(provider, account), 15000);
+      return () => clearInterval(id);
+    }
+  }, [provider, account, fetchTokenData]);
 
   const checkNetwork = useCallback(async (p: BrowserProvider) => {
     const network = await p.getNetwork();
@@ -30,7 +112,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({ children
     return correct;
   }, []);
 
-  const connectWallet = async () => {
+  const handleConnect = async (isAutoConnect = false) => {
     if (!window.ethereum) {
       // Check if user is on mobile
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -42,7 +124,7 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      toast.error("MetaMask browser extension not found!");
+      if (!isAutoConnect) toast.error("MetaMask browser extension not found!");
       return;
     }
 
@@ -77,25 +159,47 @@ export const Web3Provider: React.FC<{ children: React.ReactNode }> = ({ children
       setAccount(accounts[0]);
       setProvider(browserProvider);
       setContract(new Contract(CONTRACT_ADDRESS, ABI, browserProvider));
-      toast.success("Connected to MetaMask");
+      localStorage.setItem('isWalletConnected', 'true');
+      if (!isAutoConnect) toast.success("Connected to MetaMask");
     } catch (error: any) {
-      toast.error(error.message || "Connection failed");
+      if (!isAutoConnect) toast.error(error.message || "Connection failed");
     } finally {
       setLoading(false);
     }
   };
 
+  const disconnectWallet = useCallback(() => {
+    setAccount(null);
+    setProvider(null);
+    setContract(null);
+    localStorage.removeItem('isWalletConnected');
+    toast.info("Wallet disconnected");
+  }, []);
+
+  const connectWallet = () => handleConnect(false);
+
   useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (accounts: any) => {
-        setAccount(accounts[0] || null);
-      });
-      window.ethereum.on('chainChanged', () => window.location.reload());
+    const isConnected = localStorage.getItem('isWalletConnected');
+    if (isConnected === 'true' && window.ethereum) {
+      handleConnect(true);
     }
   }, []);
 
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts: any) => {
+        if (accounts.length === 0) {
+          disconnectWallet();
+        } else {
+          setAccount(accounts[0]);
+        }
+      });
+      window.ethereum.on('chainChanged', () => window.location.reload());
+    }
+  }, [disconnectWallet]);
+
   return (
-    <Web3Context.Provider value={{ account, provider, contract, loading, connectWallet, isLiskSepolia }}>
+    <Web3Context.Provider value={{ account, provider, contract, loading, connectWallet, disconnectWallet, isLiskSepolia, tokenInfo, refreshInfo }}>
       {children}
     </Web3Context.Provider>
   );
